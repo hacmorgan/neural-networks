@@ -1,0 +1,465 @@
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{\today}
+\title{Notes from Neural Networks and Deep Learning}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={Notes from Neural Networks and Deep Learning},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.1.9)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{ToDos}
+\label{sec:org7579ffc}
+\subsection{Chapter 1}
+\label{sec:org50b7fa1}
+\subsubsection{Install pip2.7 and install packages}
+\label{sec:org53c39ed}
+\subsubsection{Train the network using the full code}
+\label{sec:org7bb40b3}
+
+\subsection{Chapter 2}
+\label{sec:org2ccd6ee}
+\subsubsection{Once all components are explained, convert the code to python3}
+\label{sec:orgf20fbe8}
+
+
+\clearpage
+
+
+\section{Chapter 1: Using neural nets to recognize handwritten digits}
+\label{sec:orgbe2bf40}
+\subsection{The sigmoid function}
+\label{sec:org6754a13}
+The sigmoid function is defined as:
+\begin{equation} \label{eqn:sigmoid}
+\sigma(z) = \frac{1}{1 + e^{-z}} = \frac{e^z}{e^z + 1}
+\end{equation}
+
+\subsection{The cost function}
+\label{sec:org6a978cb}
+The cost function is defined as:
+\begin{equation} \label{eqn:cost}
+C(w,b) \equiv \frac{1}{2n} \sum_{n=1} ||y(x) - a||^2
+\end{equation}
+
+The sum over all the training data of the square of each difference between the correct (or desired) output
+and the network's output.
+
+\subsection{Gradient descent}
+\label{sec:org0603717}
+Calculus dictates that \(C\) changes as follows:
+\begin{equation} \label{eqn:deltacost}
+\Delta C \approx \frac{\partial C}{\partial v_1} \Delta v_1 + \frac{\partial C}{\partial v_2} \Delta v_2
+\end{equation}
+We define the gradient vector as:
+\begin{equation}
+\nabla C \equiv (\frac{\partial C}{\partial v_1}, \frac{\partial C}{\partial v_2})^T
+\end{equation}
+And by defining the vector of changes to all the inputs:
+\begin{equation}
+\Delta v \equiv (\Delta v_1, \Delta v_2)^T
+\end{equation}
+We can now rewrite Equation \ref{eqn:deltacost} as:
+\begin{equation} \label{eqn:deltacostconcise}
+\Delta C \approx \nabla C \cdot \Delta v
+\end{equation}
+
+Now we can define our movement of weights and biases to be in the opposite direction of the gradient
+of the cost function. This is the concept of the ball rolling down the hill. If we define:
+\begin{equation}
+\Delta v = - \eta \nabla C
+\end{equation}
+Where \(\eta\) is the \emph{learning rate}, we can rewrite Equation \ref{eqn:deltacostconcise} as:
+\begin{equation}
+\Delta C = - \eta ||\nabla C||^2
+\end{equation}
+We know \(||\nabla C||^2\) will always be positive, and have chosen \(\eta\) as a positive constant, so it 
+is guaranteed that \(\Delta C\) will always decrease, as desired.
+
+\textbf{Stochastic gradient descent} is a cut down version of gradient descent, which reduces computation time by 
+randomly choosing a \emph{mini batch} from the training data, rather than using all of it.
+\begin{itemize}
+\item n.b. a mini batch of size 1 is equivalent to on-line learning.
+\end{itemize}
+
+\subsection{Code}
+\label{sec:org0eefeae}
+The code centres around the \textbf{Network} class, with the following variables:
+\begin{itemize}
+\item \textbf{num\(_{\text{layers}}\)}: the number of layers the network has
+\item \textbf{sizes}: a list of integers, with the nth integer defining the number of nodes in the nth layer
+\item \textbf{biases}: the biases of the network
+\item \textbf{weights}: the weights of the links
+\end{itemize}
+For now we initialise the biases and weights to be completely random. Both biases and weights are numpy matrices, so weights[1] is a matrix storing the weights of the links between the second and third row of neurons. 
+
+Looking at that particular matrix, which we will name \(w\), let us denote the weight of the link joining the \(k^{\text{th}}\) neuron in the second layer with the \(j^{\text{th}}\) neuron in the third layer: \(w_{jk}\). While this notation seems to have \(j\), and \(k\) around the wrong way, it allows for a very concise notation for the activations of the neurons in the 3rd layer:
+\begin{equation} \label{eqn:activation}
+a' = \sigma ( wa+b )
+\end{equation}
+where:
+\begin{itemize}
+\item a is the vector of activations from the second layer of neurons
+\item so \(a'\) is obtained by multiplying the previous layer's activations by the link weights, and adding the biases. Simple!
+\end{itemize}
+
+The \textbf{SGD} function does a lot of the work here. Each epoch it randomly shuffles the training data, then partitions it into mini batches of the specified size. For each mini-batch, it makes one gradient descent step by using the function update\(_{\text{mini}}\)\(_{\text{batch}}\), updating the network's weights and biases
+
+The \textbf{update\(_{\text{mini}}\)\(_{\text{batch}}\)} function also does a lot of work, as it performs the actual update. Within this function, the \textbf{self.backrop} function does most of the actual work, as it computes the gradient of the cost function. \textbf{update\(_{\text{mini}}\)\(_{\text{batch}}\)} really works by computing the gradient for every training example in the mini-batch, and updatng self.weights and self.biases. The backprop function is detailed in the next chapter, for now, all that is necessary is an understanding of what it is doing.
+
+\clearpage
+
+
+\section{Chapter 2: How the back propagation algorithm works}
+\label{sec:org28ed78e}
+\subsection{Using matrices to compute the output of a neural network}
+\label{sec:orga8d63b1}
+In chapter 1 we introduced the notation \(w_{jk}\) leading up to equation \ref{eqn:activation}. We now extend this slightly, such that \(w^l_{jk}\) refers to the weight of the link between the \(k^{\text{th}}\) neuron in the \((l-1)^{\text{th}}\) layer and the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer. Similarly for biases, \(b^l_j\) is the bias of the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer.
+
+Using these notations, the activation \(a^l_j\) of the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer is given by:
+\begin{equation} \label{eqn:alj}
+a^l_j = \sigma ( \sum_k w^l_{jk} a^{l-1}_k + b^l_j )
+\end{equation}
+The sum here is over all neurons, \(k\), in the \((l-1)^{\text{th}}\) layer.
+
+\vspace{0.3cm}
+
+To utilise matrix form we define a \textbf{weights matrix}, \(w^l\), for the weights connecting the neurons in the \(l^{\text{th}}\) layer to those in the \((l-1)^{\text{th}}\) layer. \(w^l\) will be defined such that the entry in the \(j^{\text{th}}\) row and the \(k^{\text{th}}\) column is \(w^l_{jk}\).
+
+Similarly, we define a \textbf{bias vector}, \(b^l\), which follows naturally as the biases for each neuron in layer \(l\). And finally, we define the \textbf{activation vector}, \(a^l\), whose components are the activations \(a^l_j\).
+
+The final step towards writing Equation \ref{eqn:alj} in matrix form is vectorising a function, such as \(\sigma\). This simply refers to performing the \(\sigma\) operation elementwise.
+
+\vspace{0.3cm}
+
+Equation \ref{eqn:alj} can now be written as:
+\begin{equation} \label{eqn:almatrix}
+a^l = \sigma(w^l a^{l-1} + b^l)
+\end{equation}
+
+We will actually compute the intermediate quantity:
+\begin{equation}
+  z^l = w^l a^{l-1} + b^l
+\end{equation}
+It turns out that this quantity will be useful enough (in time) to be worth naming. We call \(z^l\) the \emph{weighted input} to the neurons in layer \(l\). Naturally, Equation \ref{eqn:almatrix} can be written as:
+\begin{equation} 
+a^l = \sigma(z^l)
+\end{equation}
+
+
+\subsection{The two assumptions we need about the cost function}
+\label{sec:org2acb1ac}
+The goal, as discussed, of back propagation is to compute the partial derivatives \(\frac{\partial C}{\partial w}\) and \(\frac{\partial C}{\partial b}\) of the cost function \(C\) with respect to any weight or bias in the network. 
+
+As the title of this section suggests, we need to make two assumptions for back propagation to work. Before we state those assumptions, we should define a cost function. We return to the quadratic cost function defined in Equation \ref{eqn:cost}:
+\begin{equation*}
+C(w,b) \(\equiv\) \frac{1}{2n} \(\sum_{\text{n=1}}\) ||y(x) - a\(^{\text{L}}\)(x)||\(^{\text{2}}\)
+\end{equation}
+We have made some small notational changes, such as the superscript \(L\), but it means the same thing. 
+\begin{itemize}
+\item \(y(x)\) is the expected (or correct) outputs of the network
+\item \(a^L(x)\) is the vector of activations of the output layer
+\end{itemize}
+\vspace{0.3cm}
+
+Okay, on to the assumptions. 
+
+\textbf{Assumption 1} is that the cost function is an average \(C = \frac{1}{n} \sum_{x} C_x\) over cost functions \(C_x\), for individul training examples, \(x\). This is the case for the quadratic cost function, where the cost of a single training example is \(C_x = \frac{1}{2} ||y - a^L||^2\). This assumtion will hold true for all cost functions to be introduced.
+
+This assumption is important, because the backpropagation algorithm will actually calculate \(\frac{\partial C_x}{\partial w}\) and \(\frac{\partial C_x}{\partial b}\) for a single training example. We then get \(\frac{\partial C}{\partial w}\) and \(\frac{\partial C}{\partial b}\) by averaging over training examples. 
+
+\textbf{Assumption 2} is that the cost function can be written as a function of the outputs of the network. That is, for output layer activations \(a^L\), the cost function can be expressed as:
+\begin{equation}
+cost C = C(a^L)
+\end{equation}
+This is true of the quadratic cost function, as the expected network outputs can be thought of as a fixed expression (i.e. not a variable because the weights and biases of the network do not change them), and as such it is a function only of \(a^L\).
+
+
+\subsection{The Hadamard product}
+\label{sec:orgc7dfe0b}
+The Hadamard product (\(\circ\)) is like the dot product but it works for matrices of multiple dimensions rather than just vectors.
+
+
+\subsection{The four fundamental equations behind backpropagation}
+\label{sec:org88c6980}
+As has been previousy discussed, backpropagation is concerned with how a change in the weights and biases of the network affects the cost function. This ultimately means calculating \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\), but first we will define an intermediate quantity, \(\delta^l_j\), known as the \emph{error} in the \(j^{\text{th}}\) neuron of the \(l^{\text{th}}\) layer.
+
+Suppose a demon sits at the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer, and makes a small change \(\Delta z^l_j\) to the neuron's weighted input (\(z^l_j\)), such that the neuron now outputs \(\sigma (z^l_j + \Delta z^l_j)\) instead of \(\sigma (z^l_j)\). This change then propagates through the network, producing a final \textbf{change} in cost of \(\frac{\partial C}{\partial z^l_j} \Delta z^l_j\). 
+
+The demon is our friend, however, and is trying to make a change that will minimise the cost function. Suppose \(\frac{\partial C}{\partial z^l_j}\) has a large magnitude (positive or negative), the demon would then choose a value of \(\Delta z^l_j\) that has the opposite sign of \(\frac{\partial C}{\partial z^l_j}\). In contrast, if \(\frac{\partial C}{\partial z^l_j}\) small in magnitude, the demon would assume the neuron is near optimal, as he cannot easily change the cost function by perturbing the weighted input. From this we can derive a heuristic sense in which \(\frac{\partial C}{\partial z^l_j}\) is a measure of error in the neuron.
+
+Motivated by the demon's story, we will define the error of neuron \(j\) in layer \(l\) as:
+\begin{equation}
+\delta^l_j \equiv \frac{\partial C}{\partial z^l_j}$
+\end{equation}
+And like we have done before, we will use \(\delta^l\) to define the vector of errors in layer \(l\). Backpropagation then gives us a way of computing \(\delta^l\) in each layer, and relating those vectors to \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\).
+
+\subsubsection{Error in the output layer, \(\delta^L\) \label{org538a70c}}
+\label{sec:orgbdae10e}
+The components of \(\delta^L\) are given by:
+\begin{equation} \label{eqn:bp1}
+\delta^L_j = \frac{\partial C}{\partial a^L_j} \sigma' (z^L_j)
+\end{equation}
+\begin{itemize}
+\item \(\frac{\partial C}{\partial a^L_j}\) measures how fast the cost is changing as a function of the \(j^{\text{th}}\) output activation.
+\item \(\sigma' (z^L_j)\) measures how fast the activation function is changing at \(z^L_j\)
+\end{itemize}
+
+To rewrite Equation \ref{eqn:bp1} in matrix form:
+\begin{equation} \label{eqn:bp1a}
+\delta^L = \nabla_a C \circ \sigma' (z^L)
+\end{equation}
+\begin{itemize}
+\item \(\nabla_a C\) is a vector whose components are the partials \(\frac{\partial C}{\partial a^L_j}\)
+\end{itemize}
+
+In the case of the quadratic cost function, \(C = \frac{1}{2} \sum_j(y_j - a_j)^2\):
+\begin{align*}
+\frac{\partial C}{\partial a^L_j} &= 2 \times \frac{1}{2} \times (y_j - a_j) \times -1 \\
+&= (a_j - y_j) \\
+\nabla_a C &= (a^L - y)
+\end{align*}
+So now we can rewrite Equation \ref{eqn:bp1a} as:
+\begin{equation}
+\delta^L = (a^L - y) \circ \sigma' (z^L)
+\end{equation}
+
+\subsubsection{Error \(\delta^l\) in terms of error in the next layer, \(\delta^{l+1}\)}
+\label{sec:orgf9223a0}
+\begin{equation} \label{eqn:bp2}
+\delta^l = ((w^{l+1})^T \delta^{l+1}) \circ \sigma'(z^l)
+\end{equation}
+\begin{itemize}
+\item \((w^{l+1})^T\) is the transpose of the weights matrix for the \(l+1^{\text{th}}\) layer.
+\end{itemize}
+
+Suppose we know the error \(\delta^{l+1}\) at the \(l+1^{\text{th}}\) layer. We can think of applying the transpose matrix to this error as moving the error backward through the network, giving us a sort of measure of the error at the \(l^{\text{th}}\) layer of the network. We then take the hadamard product \(\circ \sigma'(z^l)\), which moves the error back through the activation function in layer \(l\), giving us the error in layer \(l\), \(\delta^l\).
+\vspace{0.3cm}
+
+It follows then, that by applying Equation \ref{eqn:bp1a} and then repeatedly applying Equation \ref{eqn:bp2} for the remaining layers in the network, that we can compute the error for any layer in the network.
+
+\subsubsection{The rate of change of cost with respect to any bias in the network}
+\label{sec:org48eb42d}
+\begin{equation} \label{eqn:bp3}
+\frac{\partial C}{\partial b^l_j} = \delta^l_j
+\end{equation}
+That is, the error \(\delta^{\text{l}}_{\text{j}}\) is \emph{exactly} the rate of change we are after. Naturally we can write this shorthand as:
+\begin{equation}
+\frac{\partial C}{\partial b} = \delta
+\end{equation}
+where it is understood that \(\delta\) is being evaluated at the same neuron as \(b\).
+
+\subsubsection{The rate of change of cost with respect to any weight in the network}
+\label{sec:org416ecc3}
+\begin{equation} \label{eqn:bp4}
+\frac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j
+\end{equation}
+We already know how to compute \(a^{l-1}_k\) and \(\delta^l_j\), yay!
+
+We can write Equation \ref{eqn:bp4} in a less index-intensive way as:
+\begin{equation}
+\frac{\partial C}{\partial w} = a_{in} \delta_{out}
+\end{equation}
+where it is understood that:
+\begin{itemize}
+\item \(a_{in}\) is the activation of the neuron input to the weight \(w\), and \(\delta_{out}\) is the error in the neuron output from the weight \(w\). One interesting conclusion from this result is that weights output from low activation neurons learn more slowly than those output from higher activation neurons.
+\end{itemize}
+
+
+\subsection{Proofs for the four fundamental equations}
+\label{sec:org29249b3}
+The proofs for the four fundamental equations are mostly derived from the chain rule.
+\subsubsection{Error in the output layer}
+\label{sec:org2a50700}
+Recall that:
+\begin{equation*}
+\delta^L_j = \frac{\partial C}{\partial z^L_j}
+\end{equation*}
+As earlier discussed, the cost function is a function only of output activations \(a^L\), so by using the chain rule to break this down we get:
+\begin{equation*}
+\delta^L_j = \frac{\partial C}{\partial a^L_j} \frac{\partial a^L_j}{\partial z^L_j}
+\end{equation*}
+We can break the first partial down quite easily when using the quadratic cost function, but we have already done this in Section \ref{org538a70c}. The second partial is, by definition:
+\begin{align*}
+a^l &= \sigma(z^l) \\
+\frac{\partial a^L_j}{\partial z^L_j} &= \sigma'(z^l)
+\end{align*}
+Naturally this leaves us with the desired result:
+\begin{equation*} 
+\delta^L_j = \frac{\partial C}{\partial a^L_j} \sigma' (z^L_j)
+\end{equation*}
+
+\subsubsection{Error in layer \(l\), in terms of error in layer \(l+1\)}
+\label{sec:orgc2b5f42}
+To formulate this equation, we want to write \(\delta^l_j = \frac{\partial C}{\partial z^l_j}\) in terms of \(\delta^{l+1}_k = \frac{\partial C}{\partial z^{l+1}_k}\). We do this using the chain rule:
+\begin{align*}
+\delta^l_j &= \frac{\partial C}{\partial z^l_j} \\
+&= \sum_k \frac{\partial C}{\partial z^{l+1}_k} \frac{\partial z^{l+1}_k}{\partial z^l_j} \\
+&= \sum_k \delta^{l+1}_k \frac{\partial z^{l+1}_k}{\partial z^l_j} \\
+\end{align*}
+Now to evaluate the remaining partial term, we use the definition that:
+\begin{equation*}
+z^{l+1}_k = \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k = \sum_j w^{l+1}_{kj} \sigma(z^l_j) + b^{l+1}_k
+\end{equation*}
+
+\subsubsection{The rate of change of cost with respect to any bias in the netowrk \label{org09e108c}}
+\label{sec:orgbc8d902}
+Recalling the demon example, he was perturbing the \textbf{weighted input} to the system. The weighted input is given by:
+\begin{equation*}
+z^l_j = \sum_k w^l_{jk} a^{l-1}_k + b^l_j
+\end{equation*}
+
+We have defined the error as:
+\begin{equation*}
+\delta^l_j \equiv \frac{\partial C}{\partial z^l_j}$
+\end{equation*}
+
+Now we use partials:
+\begin{align*}
+\frac{\partial C}{\partial b^l_j} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial b^l_j} \\
+&= \delta^l_j \times 1
+\end{align*}
+
+As required.
+
+\subsubsection{The rate of change of cost with respect to any weight in the network}
+\label{sec:org64c7bd4}
+Using the same approach as in Section \ref{org09e108c}, we will break down the desired product using partials.
+\begin{align*}
+\frac{\partial C}{\partial w^l_{jk}} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}} \\
+&= \delta^l_j \frac{\partial z^l_j}{\partial w^l_{jk}}
+\end{align*}
+
+Now we break down the second partial
+\begin{align*}
+z^l_j &= \sum_k w^l_{jk} a^{l-1}_k + b^l_j \\
+\frac{\partial z^l_j}{\partial w^l_{jk}} &= a^{l-1}_k
+\end{align*}
+
+Therefore we get, as desired:
+\begin{equation*}
+\frac{\partial C}{\partial w^l_{jk}} = \delta^l_j a^{l-1}_k
+\end{equation*}
+
+
+
+\subsection{The backpropagation algorithm}
+\label{sec:orgcca7ff3}
+\subsubsection{For an individual training example}
+\label{sec:orge3abad2}
+Now that the equations are established, we can define an algorithm that conducts backpropagation.
+\begin{enumerate}
+\item \textbf{Input} \(x\): get the activations of the first layer, \(a^1\)
+\item \textbf{Feedforward}: For each \(l = 2,3,...,L\) compute \(z^l = w^la^{l-1} + b^l\) and \(a^l = \sigma(z^l)\)
+\item \textbf{Output error \(\delta^L\)}: Compute the vector \(\delta^L = \nabla_a C \circ \sigma'(z^L)\)
+\item \textbf{Backpropagate the error}: For each \(l = L-1, L-2, ... ,2\) compute \(\delta^l = ((w^{l+1})^T \delta^{l+1}) \circ \sigma'(z^l)\)
+\item \textbf{Output}: The gradient of the cost function is given by \(\frac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j\) and \(\frac{\partial C}{\partial b^l_j} = \delta^l_j\)
+\end{enumerate}
+
+It is clear now why this is called \emph{backpropagation}. The desired products are the partial derivatives of cost with respect to weights and biases, which we can find from the layer errors, which we find by propagating backward through the network from the output layer.
+\vspace{0.3cm}
+
+\subsubsection{For a mini-batch of training examples \label{orgae5c72d}}
+\label{sec:org130baab}
+The steps above outline the algorithm for a single training example, however in practice it is common to combine backpropagation with a learning algorithm such as stochastic gradient descent, in which the gradient is computed for a mini-batch of training examples at a time, and then a learning step is taken. The \textbf{SGD} algorithm is detailed below, for a mini-batch of \(m\) training examples.
+\begin{enumerate}
+\item \textbf{Input} a set of training examples
+\item \textbf{For each training example \(x\):} set the corresponding input activation \(a^{x,1}\), and perform the following steps:
+\begin{enumerate}
+\item \textbf{Feedforward:} for each \(l = 2, 3, ... , L\) compute \(z^{x,l} = w^l a^{x,l-1} + b^l\) and \(a^{x,l} = \sigma(z^{x,l})\)
+\item \textbf{Output error \(\delta^{\text{x,L}}\):} compute the vector \(\delta^{x,L} = \nabla_a C_x \circ \sigma'(z^{x,L})\)
+\item \textbf{Backpropagate the error:} for each \(l = L-1, L-2, ... , 2\) compute \(\delta^{x,l} = ((w^{l+1})^T \delta^{x,l+1}) \circ \sigma'(z^{x,l})\)
+\end{enumerate}
+\item \textbf{Gradient descent:} For each \(l = L, L-1, ... , 2\) update the weights according to the rule \(w^l \rightarrow w^l - \frac{\eta}{m} \sum_x \delta^{x,l} (a^{x,l-1})^T\), and the biases according to the rule \(b^l \rightarrow b^l - \frac{\eta}{m} \sum_x \delta^{x,l}\)
+\end{enumerate}
+
+
+
+\subsection{Code}
+\label{sec:orga6f08c6}
+Following on from the code from the last chapter, we add the \texttt{update\_mini\_batch} and \texttt{backprop} methods. 
+
+The \texttt{update\_mini\_batch} method, as its name suggests, updates the network's weights and biases for a single mini-batch of training examples, by computing the gradient for the mini-batch. The work is mostly done by calling the \texttt{backprop} method, which computes \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\). \textbf{Note: The algorithm exploits the useful feature of Python where a negative index in a list gives that index counting from the end of the list.}
+
+\subsubsection{Modification to use matrix input}
+\label{sec:orgf42cff5}
+To leverage efficient linear algebra methods that are present in most programming languages, we will modify \texttt{network.py} to apply an activation matrix whose columns are mini-batches. This script is called \texttt{network\_matrix.py}. It involves relativey few changes:
+\begin{itemize}
+\item Multiplying the weights matrix by the activations matrix automatically gives us a matrix of the correct number of rows, and \(n\) columns for \(n\) training examples
+\item The bias vector must become a bias matrix, with \(n\) columns (each a copy of the bias vector) for \(n\) training examples.
+\item The sigmoid function and cost derivative work without any modification as they can both be applied elementwise to both vectors and matrices
+\item \(\delta^l\) is now a matrix, but the operations still work the same way
+\item \textbf{The only difference outside the \texttt{backprop\_matrix} function is that we sum each row of nabla\(_{\text{b}}\) as it is returned currently.} This could be done within the backprop\(_{\text{matrix}}\) function too
+\end{itemize}
+
+\clearpage
+
+
+\section{Chapter 3: Improving the way neural networks learn}
+\label{sec:org44609a8}
+This chapter introduces some new concepts that will help our networks learn faster and be more applicable to data outside our training data, as well as a better way of initialising weights in the network, and heuristics for choosing the network's hyperparameters.
+
+\subsection{The cross-entropy cost function}
+\label{sec:org92046f2}
+When one is learning something new, being badly wrong about it tends to lead to very rapid learning. We touched on this in the last chapter, and of course we want the neurons in our network to act the same way. When they are far off producing the correct output, we would like them to rapidly correct themselves. This, however, does not always happen when using the quadratic cost function. The cost derivative, used to modify the weights and biases of a network, hinges upon the sigmoid function, which is nearly flat for a big chunk of its domain. The derivative in these areas is naturally flat, so the learning rate is slow. If the optimal weight or bias is far from the initial value, this can mean training takes a long time.
+\vspace{0.3cm}
+
+Let us consider a very basic model network: a single neuron with multiple inputs, \$ x\(_{\text{1}}\), x\(_{\text{2}}\), \ldots{} \$ and bias \(b\). The output of the neuron is still \(a = \sigma(z)\), where \(z = \sum_j w_j x_j + b\). We define the \emph{cross-entropy cost function} as:
+\begin{equation} \label{eqn:cross-entropy-cost}
+C = - \frac{1}{n} \sum_x [y \ln a + (1-y) \ln (1-a)]
+\end{equation} 
+where \(n\) is the number of items of training data, the sum is over all training inputs, \(x\), and \(y\) is the corresponding desired output for input \(x\).
+\vspace{0.3cm}
+
+It is not immediately clear that this expression is even a valid cost function, let alone one that fixes the learning slowdown problem! Let us first discuss the former point.
+
+Firstly, this cost function is non-negative. Both of the expressions in the summed term are negative by definition, as both \(y\) and \(a\) are bound to the interval \([0,1]\). Paired with the negative sign at the beginning of the expression, this cost function must only give positive values.
+
+Secondly, if the neuron's actual output is close to the desired output for all training inputs, \(x\), then the cross-entropy cost will be close to zero. Suppose we have a training example with \(y = 0\) and \(a \approx 0\). The first term disappears as \(y = 0\), and the second term does too as \(\ln(1) = 0\). A similar logic holds for \(y = 1\) and \(a \approx 1\). This does assume that the the desired putputs are 0 or 1, as is often the case in classification problems.
+\vspace{0.3cm}
+
+We will now discuss the learning slowdown problem. We substitute \(a = \sigma(z)\) into Equation \ref{eqn:cross-entropy-cost}, and apply the chain rule twice.
+\begin{align*}
+C &= - \frac{1}{n} \sum_x [y \ln \sigma(z) + (1-y) \ln (1-\sigma(z))] \\
+\frac{\partial C}{\partial w_j} &= \frac{\partial C}{\partial \sigma} \frac{\partial \sigma}{\partial w_j} \\
+&= \frac{\partial C}{\partial \sigma} \frac{\partial \sigma}{\partial z} \frac{\partial z}{\partial w_j} \\ 
+&= - \frac{1}{n} \sum_x [\frac{y}{\sigma(z)} + \frac{1-y}{1-\sigma(z)}](-1) \sigma'(z) x_j \\
+\frac{\partial C}{\partial w_j} &= \frac{1}{n} \sum_x \frac{\sigma'(z)x_j}{\sigma(z)(1-\sigma(z))} (\sigma(z)-y)\\
+\end{align*}
+
+Using the very helpful fact that \(\sigma'(z) = \sigma(z)(1-\sigma(z))\) (relatively easily proven using the quotient rule and Equation \ref{eqn:sigmoid}), we can simplify this experssion to the very neat:
+\begin{equation}
+\frac{\partial C}{\partial w_j} = \frac{1}{n} \sum_x x_j (\sigma(z) - y)
+\end{equation}
+
+This expression tells us that the cost is controlled \textbf{only} by the error in the output, where the analogous expression for the quadratic cost function also relates to \(\sigma'(z)\), which caused the learning slowdown. Yay! 
+\vspace{0.3cm}
+
+Similarly to the expression for \(w_j\), the partial derivative of cost with respect to the bias is found as follows (skipping some steps, the derivation is quite simple and can easily be computed in full on paper):
+\begin{align*}
+\frac{\partial C}{\partial b} &= \frac{\partial C}{\partial \sigma} \frac{\partial \sigma}{\partial z} \frac{\partial z}{\partial b} \\
+&= -\frac{1}{n} \sum_x[\frac{\sigma(z) - y}{\sigma(z)(\sigma(z)-1)}]\sigma'(z) \\
+\end{align*}
+Which simplifies nicely down to:
+\begin{equation} \label{del_CEcost_bias}
+\frac{\partial C}{\partial b} = \frac{1}{n} \(\sum_{\text{x}}\) [\(\sigma\)(z) - y]
+\end{euation}
+\end{document}
