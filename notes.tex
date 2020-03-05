@@ -26,35 +26,18 @@
 
 \maketitle
 
-\section{ToDos}
-\label{sec:org7579ffc}
-\subsection{Chapter 1}
-\label{sec:org50b7fa1}
-\subsubsection{Install pip2.7 and install packages}
-\label{sec:org53c39ed}
-\subsubsection{Train the network using the full code}
-\label{sec:org7bb40b3}
 
-\subsection{Chapter 2}
-\label{sec:org2ccd6ee}
-\subsubsection{Once all components are explained, convert the code to python3}
-\label{sec:orgf20fbe8}
-
-
-\clearpage
-
-
-\section{Chapter 1: Using neural nets to recognize handwritten digits}
-\label{sec:orgbe2bf40}
+\section{Using neural nets to recognize handwritten digits}
+\label{sec:org4412943}
 \subsection{The sigmoid function}
-\label{sec:org6754a13}
+\label{sec:org0d0aa86}
 The sigmoid function is defined as:
 \begin{equation} \label{eqn:sigmoid}
 \sigma(z) = \frac{1}{1 + e^{-z}} = \frac{e^z}{e^z + 1}
 \end{equation}
 
 \subsection{The cost function}
-\label{sec:org6a978cb}
+\label{sec:org327224b}
 The cost function is defined as:
 \begin{equation} \label{eqn:cost}
 C(w,b) \equiv \frac{1}{2n} \sum_{n=1} ||y(x) - a||^2
@@ -64,7 +47,7 @@ The sum over all the training data of the square of each difference between the 
 and the network's output.
 
 \subsection{Gradient descent}
-\label{sec:org0603717}
+\label{sec:org21f95f3}
 Calculus dictates that \(C\) changes as follows:
 \begin{equation} \label{eqn:deltacost}
 \Delta C \approx \frac{\partial C}{\partial v_1} \Delta v_1 + \frac{\partial C}{\partial v_2} \Delta v_2
@@ -101,7 +84,7 @@ randomly choosing a \emph{mini batch} from the training data, rather than using 
 \end{itemize}
 
 \subsection{Code}
-\label{sec:org0eefeae}
+\label{sec:org1a81af0}
 The code centres around the \textbf{Network} class, with the following variables:
 \begin{itemize}
 \item \textbf{num\(_{\text{layers}}\)}: the number of layers the network has
@@ -128,10 +111,10 @@ The \textbf{update\(_{\text{mini}}\)\(_{\text{batch}}\)} function also does a lo
 \clearpage
 
 
-\section{Chapter 2: How the back propagation algorithm works}
-\label{sec:org28ed78e}
+\section{How the back propagation algorithm works}
+\label{sec:orga02b322}
 \subsection{Using matrices to compute the output of a neural network}
-\label{sec:orga8d63b1}
+\label{sec:org6b04983}
 In chapter 1 we introduced the notation \(w_{jk}\) leading up to equation \ref{eqn:activation}. We now extend this slightly, such that \(w^l_{jk}\) refers to the weight of the link between the \(k^{\text{th}}\) neuron in the \((l-1)^{\text{th}}\) layer and the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer. Similarly for biases, \(b^l_j\) is the bias of the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer.
 
 Using these notations, the activation \(a^l_j\) of the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer is given by:
@@ -166,7 +149,7 @@ a^l = \sigma(z^l)
 
 
 \subsection{The two assumptions we need about the cost function}
-\label{sec:org2acb1ac}
+\label{sec:org75689ce}
 The goal, as discussed, of back propagation is to compute the partial derivatives \(\frac{\partial C}{\partial w}\) and \(\frac{\partial C}{\partial b}\) of the cost function \(C\) with respect to any weight or bias in the network. 
 
 As the title of this section suggests, we need to make two assumptions for back propagation to work. Before we state those assumptions, we should define a cost function. We return to the quadratic cost function defined in Equation \ref{eqn:cost}:
@@ -194,12 +177,12 @@ This is true of the quadratic cost function, as the expected network outputs can
 
 
 \subsection{The Hadamard product}
-\label{sec:orgc7dfe0b}
+\label{sec:org5d98335}
 The Hadamard product (\(\circ\)) is like the dot product but it works for matrices of multiple dimensions rather than just vectors.
 
 
 \subsection{The four fundamental equations behind backpropagation}
-\label{sec:org88c6980}
+\label{sec:orge1fb5b4}
 As has been previousy discussed, backpropagation is concerned with how a change in the weights and biases of the network affects the cost function. This ultimately means calculating \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\), but first we will define an intermediate quantity, \(\delta^l_j\), known as the \emph{error} in the \(j^{\text{th}}\) neuron of the \(l^{\text{th}}\) layer.
 
 Suppose a demon sits at the \(j^{\text{th}}\) neuron in the \(l^{\text{th}}\) layer, and makes a small change \(\Delta z^l_j\) to the neuron's weighted input (\(z^l_j\)), such that the neuron now outputs \(\sigma (z^l_j + \Delta z^l_j)\) instead of \(\sigma (z^l_j)\). This change then propagates through the network, producing a final \textbf{change} in cost of \(\frac{\partial C}{\partial z^l_j} \Delta z^l_j\). 
@@ -212,8 +195,8 @@ Motivated by the demon's story, we will define the error of neuron \(j\) in laye
 \end{equation}
 And like we have done before, we will use \(\delta^l\) to define the vector of errors in layer \(l\). Backpropagation then gives us a way of computing \(\delta^l\) in each layer, and relating those vectors to \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\).
 
-\subsubsection{Error in the output layer, \(\delta^L\) \label{org538a70c}}
-\label{sec:orgbdae10e}
+\subsubsection{Error in the output layer, \(\delta^L\) \label{org0d03fd1}}
+\label{sec:org0bba0cd}
 The components of \(\delta^L\) are given by:
 \begin{equation} \label{eqn:bp1}
 \delta^L_j = \frac{\partial C}{\partial a^L_j} \sigma' (z^L_j)
@@ -243,7 +226,7 @@ So now we can rewrite Equation \ref{eqn:bp1a} as:
 \end{equation}
 
 \subsubsection{Error \(\delta^l\) in terms of error in the next layer, \(\delta^{l+1}\)}
-\label{sec:orgf9223a0}
+\label{sec:org483e844}
 \begin{equation} \label{eqn:bp2}
 \delta^l = ((w^{l+1})^T \delta^{l+1}) \circ \sigma'(z^l)
 \end{equation}
@@ -257,7 +240,7 @@ Suppose we know the error \(\delta^{l+1}\) at the \(l+1^{\text{th}}\) layer. We 
 It follows then, that by applying Equation \ref{eqn:bp1a} and then repeatedly applying Equation \ref{eqn:bp2} for the remaining layers in the network, that we can compute the error for any layer in the network.
 
 \subsubsection{The rate of change of cost with respect to any bias in the network}
-\label{sec:org48eb42d}
+\label{sec:org3738202}
 \begin{equation} \label{eqn:bp3}
 \frac{\partial C}{\partial b^l_j} = \delta^l_j
 \end{equation}
@@ -268,7 +251,7 @@ That is, the error \(\delta^{\text{l}}_{\text{j}}\) is \emph{exactly} the rate o
 where it is understood that \(\delta\) is being evaluated at the same neuron as \(b\).
 
 \subsubsection{The rate of change of cost with respect to any weight in the network}
-\label{sec:org416ecc3}
+\label{sec:org4faf0ac}
 \begin{equation} \label{eqn:bp4}
 \frac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j
 \end{equation}
@@ -285,10 +268,10 @@ where it is understood that:
 
 
 \subsection{Proofs for the four fundamental equations}
-\label{sec:org29249b3}
+\label{sec:orgdb44931}
 The proofs for the four fundamental equations are mostly derived from the chain rule.
 \subsubsection{Error in the output layer}
-\label{sec:org2a50700}
+\label{sec:org5aae189}
 Recall that:
 \begin{equation*}
 \delta^L_j = \frac{\partial C}{\partial z^L_j}
@@ -297,7 +280,7 @@ As earlier discussed, the cost function is a function only of output activations
 \begin{equation*}
 \delta^L_j = \frac{\partial C}{\partial a^L_j} \frac{\partial a^L_j}{\partial z^L_j}
 \end{equation*}
-We can break the first partial down quite easily when using the quadratic cost function, but we have already done this in Section \ref{org538a70c}. The second partial is, by definition:
+We can break the first partial down quite easily when using the quadratic cost function, but we have already done this in Section \ref{org0d03fd1}. The second partial is, by definition:
 \begin{align*}
 a^l &= \sigma(z^l) \\
 \frac{\partial a^L_j}{\partial z^L_j} &= \sigma'(z^l)
@@ -308,7 +291,7 @@ Naturally this leaves us with the desired result:
 \end{equation*}
 
 \subsubsection{Error in layer \(l\), in terms of error in layer \(l+1\)}
-\label{sec:orgc2b5f42}
+\label{sec:org060f671}
 To formulate this equation, we want to write \(\delta^l_j = \frac{\partial C}{\partial z^l_j}\) in terms of \(\delta^{l+1}_k = \frac{\partial C}{\partial z^{l+1}_k}\). We do this using the chain rule:
 \begin{align*}
 \delta^l_j &= \frac{\partial C}{\partial z^l_j} \\
@@ -320,8 +303,8 @@ Now to evaluate the remaining partial term, we use the definition that:
 z^{l+1}_k = \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k = \sum_j w^{l+1}_{kj} \sigma(z^l_j) + b^{l+1}_k
 \end{equation*}
 
-\subsubsection{The rate of change of cost with respect to any bias in the netowrk \label{org09e108c}}
-\label{sec:orgbc8d902}
+\subsubsection{The rate of change of cost with respect to any bias in the netowrk \label{org7cb2626}}
+\label{sec:org1d589c3}
 Recalling the demon example, he was perturbing the \textbf{weighted input} to the system. The weighted input is given by:
 \begin{equation*}
 z^l_j = \sum_k w^l_{jk} a^{l-1}_k + b^l_j
@@ -341,8 +324,8 @@ Now we use partials:
 As required.
 
 \subsubsection{The rate of change of cost with respect to any weight in the network}
-\label{sec:org64c7bd4}
-Using the same approach as in Section \ref{org09e108c}, we will break down the desired product using partials.
+\label{sec:org367c357}
+Using the same approach as in Section \ref{org7cb2626}, we will break down the desired product using partials.
 \begin{align*}
 \frac{\partial C}{\partial w^l_{jk}} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}} \\
 &= \delta^l_j \frac{\partial z^l_j}{\partial w^l_{jk}}
@@ -362,9 +345,9 @@ Therefore we get, as desired:
 
 
 \subsection{The backpropagation algorithm}
-\label{sec:orgcca7ff3}
+\label{sec:orgcd2ec38}
 \subsubsection{For an individual training example}
-\label{sec:orge3abad2}
+\label{sec:org16e69fa}
 Now that the equations are established, we can define an algorithm that conducts backpropagation.
 \begin{enumerate}
 \item \textbf{Input} \(x\): get the activations of the first layer, \(a^1\)
@@ -377,8 +360,8 @@ Now that the equations are established, we can define an algorithm that conducts
 It is clear now why this is called \emph{backpropagation}. The desired products are the partial derivatives of cost with respect to weights and biases, which we can find from the layer errors, which we find by propagating backward through the network from the output layer.
 \vspace{0.3cm}
 
-\subsubsection{For a mini-batch of training examples \label{orgae5c72d}}
-\label{sec:org130baab}
+\subsubsection{For a mini-batch of training examples \label{org31b73bf}}
+\label{sec:orge3e8ff3}
 The steps above outline the algorithm for a single training example, however in practice it is common to combine backpropagation with a learning algorithm such as stochastic gradient descent, in which the gradient is computed for a mini-batch of training examples at a time, and then a learning step is taken. The \textbf{SGD} algorithm is detailed below, for a mini-batch of \(m\) training examples.
 \begin{enumerate}
 \item \textbf{Input} a set of training examples
@@ -394,13 +377,13 @@ The steps above outline the algorithm for a single training example, however in 
 
 
 \subsection{Code}
-\label{sec:orga6f08c6}
+\label{sec:org7ad8119}
 Following on from the code from the last chapter, we add the \texttt{update\_mini\_batch} and \texttt{backprop} methods. 
 
 The \texttt{update\_mini\_batch} method, as its name suggests, updates the network's weights and biases for a single mini-batch of training examples, by computing the gradient for the mini-batch. The work is mostly done by calling the \texttt{backprop} method, which computes \(\frac{\partial C}{\partial w^l_{jk}}\) and \(\frac{\partial C}{\partial b^l_j}\). \textbf{Note: The algorithm exploits the useful feature of Python where a negative index in a list gives that index counting from the end of the list.}
 
 \subsubsection{Modification to use matrix input}
-\label{sec:orgf42cff5}
+\label{sec:org765b7ab}
 To leverage efficient linear algebra methods that are present in most programming languages, we will modify \texttt{network.py} to apply an activation matrix whose columns are mini-batches. This script is called \texttt{network\_matrix.py}. It involves relativey few changes:
 \begin{itemize}
 \item Multiplying the weights matrix by the activations matrix automatically gives us a matrix of the correct number of rows, and \(n\) columns for \(n\) training examples
@@ -413,16 +396,16 @@ To leverage efficient linear algebra methods that are present in most programmin
 \clearpage
 
 
-\section{Chapter 3: Improving the way neural networks learn}
-\label{sec:org44609a8}
+\section{Improving the way neural networks learn}
+\label{sec:org282b479}
 This chapter introduces some new concepts that will help our networks learn faster and be more applicable to data outside our training data, as well as a better way of initialising weights in the network, and heuristics for choosing the network's hyperparameters.
 
 \subsection{The cross-entropy cost function}
-\label{sec:org92046f2}
+\label{sec:orgb6e3400}
 When one is learning something new, being badly wrong about it tends to lead to very rapid learning. We touched on this in the last chapter, and of course we want the neurons in our network to act the same way. When they are far off producing the correct output, we would like them to rapidly correct themselves. This, however, does not always happen when using the quadratic cost function. The cost derivative, used to modify the weights and biases of a network, hinges upon the sigmoid function, which is nearly flat for a big chunk of its domain. The derivative in these areas is naturally flat, so the learning rate is slow. If the optimal weight or bias is far from the initial value, this can mean training takes a long time.
 \vspace{0.3cm}
 
-Let us consider a very basic model network: a single neuron with multiple inputs, \$ x\(_{\text{1}}\), x\(_{\text{2}}\), \ldots{} \$ and bias \(b\). The output of the neuron is still \(a = \sigma(z)\), where \(z = \sum_j w_j x_j + b\). We define the \emph{cross-entropy cost function} as:
+Let us consider a very basic model network: a single neuron with multiple inputs, \(x_1, x_2, ... x_k\) and bias \(b\). The output of the neuron is still \(a = \sigma(z)\), where \(z = \sum_j w_j x_j + b\). We define the \emph{cross-entropy cost function} as:
 \begin{equation} \label{eqn:cross-entropy-cost}
 C = - \frac{1}{n} \sum_x [y \ln a + (1-y) \ln (1-a)]
 \end{equation} 
@@ -433,7 +416,7 @@ It is not immediately clear that this expression is even a valid cost function, 
 
 Firstly, this cost function is non-negative. Both of the expressions in the summed term are negative by definition, as both \(y\) and \(a\) are bound to the interval \([0,1]\). Paired with the negative sign at the beginning of the expression, this cost function must only give positive values.
 
-Secondly, if the neuron's actual output is close to the desired output for all training inputs, \(x\), then the cross-entropy cost will be close to zero. Suppose we have a training example with \(y = 0\) and \(a \approx 0\). The first term disappears as \(y = 0\), and the second term does too as \(\ln(1) = 0\). A similar logic holds for \(y = 1\) and \(a \approx 1\). This does assume that the the desired putputs are 0 or 1, as is often the case in classification problems.
+Secondly, if the neuron's actual output is close to the desired output for all training inputs, \(x\), then the cross-entropy cost will be close to zero. Suppose we have a training example with \(y = 0\) and \(a \approx 0\). The first term disappears as \(y = 0\), and the second term does too as \(\ln(1) = 0\). A similar logic holds for \(y = 1\) and \(a \approx 1\). This does assume that the the desired putputs are 0 or 1, as is often the case in classification problems. With that said, at intermediate values of \(y\) (and \(a\)) between 0 and 1, the cross-entropy cost function is still minimised. This can be proven with calculus, or simply by plugging the cross-entropy cost function into a graphing calculator such as geogebra.
 \vspace{0.3cm}
 
 We will now discuss the learning slowdown problem. We substitute \(a = \sigma(z)\) into Equation \ref{eqn:cross-entropy-cost}, and apply the chain rule twice.
@@ -462,4 +445,350 @@ Which simplifies nicely down to:
 \begin{equation} \label{del_CEcost_bias}
 \frac{\partial C}{\partial b} = \frac{1}{n} \(\sum_{\text{x}}\) [\(\sigma\)(z) - y]
 \end{euation}
+
+It is also worth mentioning that the learning rate (\(\eta\)) can be much lower for the cross-entropy cost function than for the quadratic cost function, but this doesn't really mean much.
+
+\subsubsection{Cross-entropy cost for a network of many neurons}
+\label{sec:org5d01a0f}
+Equation \ref{eqn:cross-entropy-cost} is relevant to a network of one neuron, but can easily be generalised for networks of many neurons. With \(y = y_1, y_2, ... y_k\) as the desired outputs of the system, and \(a^L = a^L_1, a^L_2, ... , a^L_k\) as the final layer activations (actual outputs) of the system, we define cross entropy as:
+\begin{equation}
+C = -\frac{1}{n} \sum_x \sum_j [y_j \ln a^L_j + (1-y_j) \ln (1-a^L_j)]
+\end{equation}
+
+This is the same as equation \ref{eqn:cross-entropy-cost}, just summing over the output neurons.
+
+\subsubsection{When should I use cross-entropy cost?}
+\label{sec:org2022477}
+Cross-entropy cost is better than the quadratic cost function for almost every network, so long as \textbf{the sigmoid function is used}.
+
+
+
+\subsection{Softmax}
+\label{sec:org12fe9d1}
+While we will not discuss softmax layers again until chapter 6, they are an interesting aside. A softmax layer replaces the sigmoid activation function with the so-called \emph{softmax function}. The weighted input is still calculated the same way. According to this function, the activation \(a^L_j\) is given by:
+\begin{equation}
+a^L_j = \frac{e^{z^L_j}}{\sum_k e^{z^L_k}}
+\end{equation}
+Where the denominator is summed over all output neurons.
+\vspace{0.3cm}
+
+The point of a softmax layer is that it makes the output of the neurons form a kind of probability distribution. That is to say, their activations sum to 1. This can be verified algebraically but can also be seen intuitively.
+\vspace{0.3cm}
+
+Softmax layers can also be used to address the learning slowdown problem. To understand this, we define the \emph{log-likelihood} cost function. Using the usual notation where \(x\) is a training input to the network and \(y\) is the corresponding desired output, we define the log-likelihood cost as:
+\begin{equation} \label{eqn:log-likelihood-cost}
+C \equiv -\ln a^L_y
+\end{equation}
+Note that \(a^L_y\) is the output \textbf{only from the neuron we want to fire}. Using our MNIST classification as an example, suppose we want to classify a 7, then \(a^L_y\) will be the activation of the 7\(^{\text{th}}\) neuron. If the network is doing well and \(a^L_7 \approx 1\), then the cost will be low. We need not consider the other activations in the cost function, as the softmax function already does this. If \(a^L_7 \approx 1\), then by definition, all other activations will be quite low. 
+\vspace{0.3cm}
+
+Now, if we find the partial derivatives of the log-likelihood cost with respect to individual weights and biases in the network, we will find that they, like those of the cross-entropy cost function, are only related to the difference between desired output and the output layer activations.
+\begin{align}
+\frac{\partial C}{\partial b^L_j} &= a^L_j - y_j \\
+\frac{\partial C}{\partial w^L_{jk}} &= a^{L-1}_k (a^L_j - y_j)
+\end{align}
+
+Note that here \(y\) refers to the vector of output activations, where above we were using it to refer to a single output activation.
+
+
+\subsection{Overfitting}
+\label{sec:orga67a8a2}
+Overfitting is a phenomenon where the network becomes very good at classifying the training data, but worse at generalising to test data or real world data. It is often referred to as \emph{overtraining}, as it is caused by training for too long and/or on a dataset that is too small. In general the best way to avoid overfitting is to use as big a training dataset as possible, however this is not always pratical.
+
+\subsubsection{Detecting overfitting}
+\label{sec:org99c4798}
+There are some telltale signs of overfitting that we can use to help us detect it. Given our propensity for understanding data when visualised, most of them involve plotting accuracy.
+\begin{itemize}
+\item \textbf{Plotting the accuracy on the test data} - if we see a plateau of acuracy, this usually suggests the network has stopped learning. The cost on training data plotted over the same range of epochs will likely continue to decrease, a clear sign of overfitting.
+\item \textbf{Plotting accuracy on the training data} - Overfitting is characterised by accuracy on training data reaching (or getting very close to) 100%.
+\item \textbf{Plotting both of these together} - A network that has been overfitted to the training data will show a divergence in the previous two graphs when overfitting really kicks in.
+\end{itemize}
+
+\subsubsection{An aside on the MNIST validation data}
+\label{sec:orga5f7e1a}
+Until now we have not used the \texttt{validation\_data} that the MNIST data loading function provides. The intention of this dataset is to be used to tune the network's hyper-parameters (network structure, no. of epochs, mini-batch size, etc.) without testing on the test data. That is to say, we use the validation data as test data while we tune the hyper-parameters, and only once we have finished tuning do we test on the test data. This prevents us from having a network that is biased toward the test data. 
+
+
+\subsection{Regularization}
+\label{sec:org46e58e2}
+There are ways to prevent overfitting other than just having a bigger dataset. We can always reduce the size of our network, though this reduces the power of the network as well, so we would only do this as a last resort.
+
+Fortunately we can employ \emph{regularization} techniques to help reduce the instance of overfitting. We will now intrduce \emph{weight decay}, also known as \emph{L2 regularization}. It works by adding a term to the cost function, called the regularization term. The regularized cross entropy is:
+\begin{equation} \label{eqn:regularized-cross-entropy}
+C = -\frac{1}{n} \sum_{xj}[y_j \ln a^L_j + (1-y) \ln (1-a^L_j)] + \frac{\lambda}{2n} \sum_w w^2
+\end{equation} 
+
+The regularization term here is the sum of the squares of all the weights in the network, scaled by \(\frac{\lambda}{2n}\), where \(\lambda > 0\) is the \emph{regularization parameter}, and \(n\) (as usual) is the number of training examples. Note here that the regularization term does not include biases. 
+
+The same thing can be done for the quadratic cost function, using exactly the same regularization term. We can use this fact to write the regularized cost function as:
+\begin{equation}
+C = C_0 + \frac{\lambda}{2n} \sum_w w^2
+\end{equation} \label{eqn:regularized-lazy}
+where $C_0$ is the original cost function.
+\vspace{0.3cm}
+
+Intuitively, regularization makes the network prefer to learn small weights. Large weigts will only be allowed if they considerably reduce the cost function. The relative importance of the two terms in the cost function is varied with the regularization parameter, $\lambda$. Small $\lambda$ conveys a preference for minimised cost, and large $\lambda$ conveys a preference for minimised weights.
+\vspace{0.3cm}
+
+Let us now show algebraically that regularization works. As usual, we are required to compute $\frac{\partial C}{\partial w}$ and $\frac{\partial C}{\partial b}$ for each weight and bias in the network. We will take the partial derivatives of Equation \ref{eqn:regularized-lazy}:
+\begin{align*}
+\frac{\partial C}{\partial w} &= \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} w \\ 
+\frac{\partial C}{\partial b} &= \frac{\partial C_0}{\partial b} 
+\end{align*}
+
+We have already computed the intermediate terms $\frac{\partial C_0}{\partial w}$ and $\frac{\partial C_0}{\partial b}$, so we simply add $\frac{\lambda}{n} w$ to the partial derivative of all the weight terms.
+\vspace{0.3cm}
+
+The partial derivatives with respect to the biases have not changed, so the gradient descent learning rule for biases remains: 
+\begin{equation*}
+b \rightarrow b - \eta \frac{\partial C_0}{\partial b}
+\end{equation*}
+and the rule for weights becomes:
+\begin{align}
+w &\rightarrow w - \eta \frac{\partial C_0}{\partial w} - \frac{\eta \lambda}{n} w \\
+&= (1-\frac{\eta \lambda}{n}) w - \eta \frac{\partial C_0}{\partial w} 
+\end{align} 
+Exactly the same as the usual rule, except we first rescale the weight by a factor $1-\frac{\eta \lambda}{n}$. This rescaling is referred to as /weight decay/. It appears from the equation that this will drive the weights unstoppably toward 0, but this is not the case. If increasing the weight will reduce the cost function $C_0$ sufficiently, this term will be overpowered.
+\vspace{0.3cm}
+
+The learning rule for /stochastic/ gradient descent for biases remains:
+\begin{equation*}
+b \rightarrow b - \frac{eta}{m} \sum_x \frac{\partial C_x}{\partial b}
+\end{equation*}
+And the equivalent for weights becomes:
+\begin{equation}
+w \rightarrow (1 - \frac{\eta \lambda}{n}) w - \frac{\eta}{m} \sum_x \frac{\partial C_x}{\partial w}
+\end{equation}
+Where:
+\begin{itemize}
+\item $m$ is the size of the mini-batch
+\item $n$ is the size of the full training set
+\item The sum is over training examples $x$ in the mini-batch
+\end{itemize}
+
+Interestingly, regularization also helps to avoid getting stuck in local minima of the cost function.
+
+
+\subsubsection{Why does regularization work?}
+\label{sec:orgf9db6f6}
+The standard explanation for this (which is well explained in the online book with diagrams) involves Ockham's Razor. Suppose we have 9 data points in a mostly linear arrangement, and are trying to deduce the model of \(y\) in terms of \(x\). We \textbf{can} perfectly fit a 9\(^{\text{th}}\) order polynomial to the data points, but it will become dominated by the \(x^9\) term once we move far beyond the data points. A linear model, on the other hand, will not pass through all points, but logically provides a much better prediction of the model outside the range of the data points, if we assume the original data was polluted with some kind of noise. We "know" this because of Ockham's Razor.
+\vspace{0.3cm}
+
+Now let's think of this in terms of neural networks. Suppose we have a network with mostly small weights, as a regularized cost function generates. The smalless of the weights means that a few random inputs here and there (like noise) will have limited effect on the behaviour of the network. This makes it hard for the network to learn the effects of local noise in the data. It's analogous to think of this as a way of making single pieces of evidence matter less to the output of the network, while a type of evidence seen often across a network will elicit a greater response from the network.
+
+
+\subsubsection{Why not regularize biases?}
+\label{sec:org0cdd71e}
+We can regularize biases in our networks, but it often has little to no effect. This is partly because large biases do not make a neuron sensetive to its inputs in the same way as large weights. Large biases also allow neurons to saturate, which is actually desirable behaviour.
+
+
+\subsubsection{Other techniques for regularization}
+\label{sec:orgaa9cc9f}
+We will here discuss three other regularization techniques, though there are many, many more. 
+
+\begin{enumerate}
+\item \textbf{L1 regularization}
+\label{sec:org61c2c80}
+is similar to L2 regularization, but we add the sum of the absolute values of the weights rather than their squares.
+\begin{equation}
+C = C_0 + \frac{\lambda}{n} \sum_w |w|
+\end{equation}
+
+While similar to L2 regularization, this will behave slightly differently. Let us look at the partial derivatives of the cost function now, to see if we can establish how differently it will behave.
+\begin{equation}
+\frac{\partial C}{\partial w} = \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} sgn(w)
+\end{equation}
+Where \(sgn(w)\) is the sign of w, i.e. \(1\) if \(w\) is positive, and \(-1\) if \(w\) is negative. Now we can consider the gradient descent learning rules for L1 regularization:
+\begin{equation}
+w \rightarrow w' - \frac{\eta \lambda}{n} sgn(w) - \eta \frac{\partial C_0}{\partial w} 
+\end{equation}
+As usual, we can replace the final term with an average over a mini-batch if we wish.
+\vspace{0.3cm}
+
+If we compare the gradient descent rules for L1 and L2 regularization, we see that L1 regularization drives the weights down by a constant amount, where L2 regularization drives them down by an amount proportional to the size of the weight. This means that when a particular weight is large, it will be driven down by L2 regularization faster than by L1 regularization; but if that weight is small it will be driven down by L1 regularization faster. This tends to concentrate the weight of the network in a small number of important connections.
+
+We also must note that the derivative \(\frac{\partial C}{\partial w}\) is not defined at \(w = 0\), because the function \(|w|\) has a sharp corner at \(w = 0\). This is okay though, as we can simply define \(sgn(0) = 0\), which will work because regularization is already trying to reduce weights, and it can't reduce a weight that is already 0.
+
+
+\item \textbf{Dropout}
+\label{sec:orga172084}
+has a very different mechanism of action to L1 and L2 regularization, in that it does not modify the cost function, but the network itself. For each mini-batch, half of the hidden neurons (selected at random) are temporarily removed. The training examples are fed through the stripped down network and then backpropagated, and the weights and biases (that have not been removed) are updated as usual. This is repeated, with a new random selection of weights and biases each time. This does mean that running the full network will result in twice the neurons activating, so we halve all weights outgoing from the hidden neurons. The mechanism by which dropout reduces overfitting is analogous to averaging the outputs from multiple networks. Actually doing that is unduly expensive, but does reduce the effect of overfitting. Empirically, dropout is very effective as a regularization tool, especially in deep neural networks. 
+
+
+\item \textbf{Atrificially expanding the training data}
+\label{sec:orgb803354}
+is a surprisingly effective tool for reducing overfitting. We know already that larger training datasets are less prone to overfitting than smaller ones, but collecting more data is expensive. We can, however, make small changes to our training data to make it look different on a pixel-by-pixel basis, while retaining the same desired network output. The simplest way to do this is by rotating the input image slightly. This changes the locations of the black and white pixels substantially, but is still the same image.
+\end{enumerate}
+
+
+\subsection{Weight Initialisation \label{org579dc5c}}
+\label{sec:org6814063}
+In our work thus far we have initialised our networks' weights and biases with independent Gaussian random variables, normalised to have mean 0 and standard deviation 1. It turns out we can actually initialise our weights and biases wuite a bit better than this. Let us look at an example network to demonstrate the problem with our current initialisation. 
+\vspace{0.3cm}
+
+Suppose we have a network with 1000 input neurons, with normalised Gaussians used to initialise the weights and biases. Let us focus on the 1000 weights connecting the input neurons and the first neuron in the first hidden layer. Suppose also that we have an input where half of the input neurons are on and half are off. Now consider the weighted sum \(z = \sum_j w_j x_j + b\) of inputs to our hidden neuron. Of course, 500 terms in this sum vanish, so we are left with 500 weight terms and a bias term. Therefore \(z\) itself is distributed as a Gaussian with mean 0 and standard deviation \(\sqrt{501} \approx 22.4\). That is, \(z\) has a broad gaussian distribution, and it is highly likely that \(z\) wil be much greater than 1 or much less than -1. This means the chance of saturating our hidden neuron is alarmingly high, and as we know a saturated neuron will learn very slowly due to small changes in weights having almost no effect.
+\vspace{0.3cm}
+
+This is very similar to the problem we faced earlier with saturated output neurons, which we solved by implementing a better cost function. Unfortunately, a better choice of cost function does not help at all with saturated hidden neurons. 
+\vspace{0.3cm}
+
+Considering the cause of the excessively large standard deviation in the example above, for a network with \(n_{in}\) input weights, we will initialise our weights as Gaussian random variables with mean 0 and standard deviation \(\frac{1}{\sqrt{n_{in}}}\). We will still initialise our biases with mean 0 and standard deviation 1, because it really doesn't matter what biases start as. Some people initialise them all to 0. 
+
+
+\subsection{Code}
+\label{sec:orgb6070bc}
+The code for our updated network, \texttt{network2.py}, is quite similar to \texttt{network.py}. We will cover the important changes here.
+
+\subsubsection{\texttt{default\_weight\_initializer}}
+\label{sec:org7dc2986}
+This is the function that initialises the weights as discussed in Section \ref{org579dc5c}. It is the same as the \texttt{large\_weight\_initializer}, except it divides the weights by the square root of the number of connections input to that neuron (i.e. the number of neurons in the previous layer).
+
+\subsubsection{\texttt{CrossEntropyCost}}
+\label{sec:orgaeee52f}
+The cost is now implemented as a class rather than a function. This is because different cost functions provide different \(\delta\) functions, so each cost class (we also have \texttt{QuadraticCost}) has two functions within it. Two important notes about this class are:
+\begin{itemize}
+\item \texttt{np.nan\_to\_num()} ensures that we handle the log of numbers very close to 0 appropriately.
+\item \texttt{@staticmethod} tells the Python interpreter that the function that follows does not depend on the object in any way, and it is for this reason that both functions in the cost class do not take \texttt{self} as the first argument.
+\end{itemize}
+
+\subsubsection{L2 Regularization}
+\label{sec:orga227bdc}
+The change from L2 regularization is hard to detect, but it is there! In the 4\(^{\text{th}}\) last line of the \texttt{update\_mini\_batch} method, un updating the weights, we have the weight decay term.
+
+
+\subsection{How to choose hyper-parameters}
+\label{sec:org7e6245c}
+Without an intuition for appropriate values for a neural network's hyper-parameters, it can be extremely difficult to just pull appropriate values out of a hat, so to speak. 
+
+\subsubsection{Broad strategy}
+\label{sec:orgedb1fa0}
+When using neural networks to attack a new problem, the first step is to achieve any non-trivial result, i.e. anything better than chance. This can be surprisingly difficult, especially when confronting a new kind of classification problem. There are some strategies we can adopt to help us overcome this, which mostly boil down to training faster so that we can try many different network hyper-parameters. Some techniques for this are covered below:
+\vspace{0.3cm}
+
+\textbf{Remove all training examples that aren't ones or zeros}, which will reduce our training and test sets to one fifth of their original size, which provides a training speedup by a factor of 5. 
+\vspace{0.3cm}
+
+\textbf{Strip the network down to the simplest network that will do meaningful learning}. We may decide that by removing the hidden layer(s) or cutting down their size, our network can still learn in a meaningful way. This will be much faster, but of course this is inappropriate if we are trying to find the correct number of hidden layers or neurons for our network.
+\vspace{0.3cm}
+
+\textbf{Increase the frequency of monitoring}. Running \texttt{network2.py} on a laptop (without matrix optimisation) takes about 10 seconds per epoch. This isn't a huge issue, but when doing a lot of testing it can get very tiresome. Monitoring every epoch means monitoring every 50000 images. We can monitor more frequently than every epoch, or we could also reduce the training set size to achieve a similar effect. Similarly, we could reduce the validation set size from 10000 to, say, 100. \textbf{Note:} If we decrease the number of training examples we should proportionally decrease \(\lambda\).
+\vspace{0.3cm}
+
+It is worth mmentioning here that it can be tempting to discard these methods, on the assumption that we will get a result sooner or later, but this is not always true, and implementing these kinds of methods can save an immense amount of time.
+\vspace{0.3cm}
+
+We will now discuss some specific recommendations for setting parameters of our networks, focusing on the learning rate \(\eta\), the L2 regularization parameter \(\lambda\), and the mini-batch size. Many of the remarks will also apply to other hyperparameters, including those of network architecture, other regularization parameters, and some hyper-parameters we are yet to meet, such as momentum co-efficient.
+
+\subsubsection{Learning rate}
+\label{sec:org465a833}
+As we have seen empirically so far, a value of \(\eta\) too low will cause very slow learning, while a value of \(\eta\) too high will cause no or very erratic learning. A process to determine a good value for \(\eta\) is:
+
+\begin{enumerate}
+\item Estimate a threshold value for \(\eta\) at which the cost on the training data immediately begins decreasing, rather than oscillating or increasing.
+\label{sec:orgabf75f3}
+This needs not be accurate, just as an order of magnitude. We could start at \(\eta = 0.01\) and then increase to 0.1 and 1 in turn until we find a value for eta at which the cost oscillates or increases. The same applies in reverse if our initial guess is too high, and the cost oscillates or increases, we should decrease it to 0.001 and 0.0001 in turn until we find a value at which the cost decreases over the first few epochs. This procedure will give us an order of magnitude estimate for the threshold value of \(\eta\). 
+
+\item Suppose we landed on \(\eta = 0.1\) as our threshold value.
+\label{sec:orgcbdc9ac}
+We could then optionally bump up the value by 0.1 until we find the threshold at which the cost starts oscillating, let's say \(\eta = 0.5\). 
+
+\item Of course, the actual value for \(\eta\) should be no greater than the threshold value,
+\label{sec:org7d87e4c}
+our network wouldn't learn that way. The ideal learning rate should be something like a factor of two below the threshold value, so in our case this would be \(\eta = 0.25\). In the case of the MNIST dataset, this strategy led to these exact figures for the learning rate. Over 30 eopchs, \(\eta = 0.5\) works perfectly well also. \\
+
+\item Holup, why are we measuring this based on the cost rather than accuracy on validation data?
+\label{sec:orgbed41df}
+We will use accuracy on validation data to adjust all of the other parameters, and the choice to use cost to quantify this is really just a preference. This preference is rooted in the fact that learning rate is intended to control the step size in gradient descent, and only incidentally affects the classification accuracy of the network. The other parameters are directly intended to improve classification accuracy.
+\end{enumerate}
+
+\subsubsection{Use early stopping to determine the number of epochs to train for}
+\label{sec:org9d350a6}
+Using early stopping eliminates the number of epochs parameter altogether, but necessarily introduces another parameter to determine when to stop. A common example, at least for MNIST, is the point at which no improvement is seen in 10 epochs. Even at this point, we could be missing future learning (if we are unlucky), but this helps to control the training time until the point at which we have come to know our network well. Once the other parameters are better set, we can relax this imposition to no improvement for, say, 20 epochs or even 50 epochs.
+
+\subsubsection{Learning rate schedule}
+\label{sec:orgfe025a2}
+So far we have been holding the learning rate \(\eta\) constant, but it is often desirable to vary the learning rate. Intuitively, we want a higher learning rate earlier on in our program when our weights are badly wrong, and later we want a lower learning rate to fie tune the weights, avoiding overshooting the local minima of the cost function. \\
+
+A common way to implement this is to use a similar idea to early stopping, hold the learning rate constant until the validation accuracy gets worse. At this pint, we decrease the learning rate by, say, a factor of two or ten. We repeat this until our learning rate is a factor of 1024 or 1000 below its original value, then we terminate.\\
+
+This can lead to a world of headaches, so it is usually best to start with a fixed learning rate while we get to know our network, then implement a learning rate schedule. 
+
+\subsubsection{The regularization parameter}
+\label{sec:org88ae4a1}
+It is best to start with \(\lambda = 0\) and find a good value for \(\eta\) first. Once this is done, start at \(\lambda = 1.0\) (which is a completely arbitrary choice btw) and increase or decrease by factors of 10 as required to improve performance on validation data. Once the order of magnitude is found, \(\lambda\) can be fine tuned. Once that is done, return to \(\eta\) and make any necessary adjustments. 
+
+\subsubsection{Mini-batch size}
+\label{sec:orgcd04fb6}
+To answer the question of how to set mini-batch size, consider online learning (i.e. mini-batch size 1). A concern about online learning is that it will provide an inaccurate estimate of the gradient of the cost function. In reality this isn't all that important, so long as our gradient estimate still tends to decrease the cost. The positive aspect of online learning is that we are constantly updating our weights, so each new estimate is based on the previous, slightly improved one. \\
+
+The optimal solution is, unsurprisingly, somewhere between online learning and learning with enormous mini-batches. A mini-batch size too small doesn't make good use of optimised matrix algebra libraries that speed up the backpropagation process, and one too big doesn't stop to learn often enough. Fortunately, mini-batch size is independent of other network hyper-parameters (except network architecture), so once acceptable values for the oher hyper-parameters have been found, a little bit of trial and error can be employed to optimise the mini-batch size.
+
+
+\subsection{Other techniques}
+\label{sec:org00f756d}
+\subsubsection{Variations on stochastic gradient descent}
+\label{sec:org3c036c6}
+\begin{enumerate}
+\item \textbf{The Hessian Technique:}
+\label{sec:orgbfba520}
+If we imagine our cost function as a function of the weights of the system (which it is), so \(C = C(w)\) for \(w = w_1, w_2, ... ,w_n\), we can approximate the cost function near a point using a Taylor approximation:
+\begin{equation}
+C(w + \Delta w) = C(w) + \sum_j \frac{\partial C}{\partial w_j} \Delta w_j + \frac{1}{2} \sum_{jk} \Delta w_j \frac{\partial^2 C}{\partial w_j \partial w_k} \Delta w_k + ...
+\end{equation}
+
+Discarding any higher order terms, this can be written more compactly as:
+\begin{equation} \label{eqn:compact-hessian}
+C(w + \Delta w) = C(w) + \nabla C \dot \Delta w + \frac{1}{2} \Delta w^T H \Delta w 
+\end{equation}
+
+Where \(\nabla C\) is the usual gradient vector, and \(H\) is a atrix known as the \emph{Hessian matrix}, whose \textit{jk}\(^{\text{th}}\) entry is \(\frac{\partial^2 C}{\partial w_j \partial w_k}\). We can use calculus to show that the expression can be minimised by choosing 
+\begin{equation}
+\Delta w = -H^{-1} \nabla C
+\end{equation}
+Providing that Equation \ref{eqn:compact-hessian} is a good approximate expression for the cost function, we would expect that moving from point \(w\) to \(w + \Delta w = w - H^{-1} \nabla C\) should significantly reduce the cost function. This suggests we can so something very similar to gradient descent, starting with random weights \(w\), then updating the weights:
+\begin{equation}
+w' = w - \eta H^{-1} \nabla C
+\end{equation}
+Where \(\eta\) is the learning rate. \\
+
+There are theoretical and empirical results showing that this hessian technique converges in fewer steps than standard gradient descent, which is largely a result of incorporating second order changes in the cost function. So why aren't we using it? Despite its qualities, it is \textbf{very difficult to apply in practice}, partly due to the sheer size of the Hessian matrix. A neural network with 10\(^{\text{7}}\) weights and biases will have a corresponding Hessian matrix with 10\(^{\text{14}}\) entries! There are, however, variations on gradient descent inspired by the Hessian technique, which avoid the problem of overly large matrices. One example is momentum-based gradient descent.
+
+\item \textbf{Momentum-based gradient descent:}
+\label{sec:orgddff674}
+Thinking back to the notion of the ball rolling down the hill, it was important to be aware that gradient descent didn't behave exactly like a ball rolling down a hill. If we stick with this analogy, the advantage of the Hessian technique is its ability to capture the velocity of the ball, not just its position on the hill. Momentum- based gradient descent emulates this by adding an element of velocity to the parameters we're trying to optimise, as well as an element of friction, giving the ball a kind of momentum. The gradient acts to change the velocity, not (directly) the position, and the friction gradually reduces the velocity. \\
+
+For a more precise definition, we introduce the variables \(v = v_1, v_2, ... , v_n\), one for each \(w_j\) variable. then we replace the gradient descent update rule \(w \rightarrow w' = w - \eta \nabla C\) with: 
+\begin{align}
+v \rightarrow v' &= \mu v - \eta \nabla C \\
+w \rightarrow w' &= w + v' 
+\end{align}
+Where \(\mu\) is a hyper-parameter which controls the amount of damping, or friction, in the system. \\
+
+To build up an understanding of how this works, imagine the case where \(\mu = 1\), which corresponds to no friction. The "force" term \(\nabla C\) is modifying the velocities, and the velocities are controlling the rate of change of the weights. We build up the velocity by repeatedly adding gradient terms to it, which means if the gradient is roughly the same through several rounds of learning, we could build up quite a considerable velocity. \\
+
+This enables us the momentum technique to work considerably faster than vanilla gradient descent, but what happens when we get to the bottom? With all that velocity we could easily overshoot. With \(\mu = 0\) (maximum friction), the equations reduce to vanilla gradient descent. In practice, a value between 1 and 0 will have the optimal behaviour of building velocity while minimising overshoot. \\
+
+The name, incidentally, of the hyper-parameter \(\mu\), is the poorly chosen \emph{momentum coefficient}. Poorly chosen because it much more closel affects friction than momentum, but that's the name.
+\end{enumerate}
+\subsubsection{Other models of artificial neuron}
+\label{sec:org6cad84c}
+In principle, a network built from sigmoid neurons can compute any function. In practice, however, networks built from different neurons can outperform sigmoid neuron networks. Let us look at some other neuron models in use today.
+
+\begin{enumerate}
+\item \textbf{tanh neuron:}
+\label{sec:org7099d1a}
+The tanh neuron (pronounced "tanch") replaces the sigmoid function with the hyperbolic tangent function. It still takes in the same input, \(wx + b\), and looks very similar to the sigmoid function both graphically and algebraically. The tanh function is defined as:
+\begin{equation}
+\tanh(z) \equiv \frac{e^z - e^{-z}}{e^z + e^{-z}}
+\end{equation}
+The tanh function is shaped very similarly to the sigmoid function, with the main difference being that its range is \([-1,1]\) rather than \([0,1]\). This means that the outputs of (and potentially inputs to) the system may have to be normalised differently to those with sigmoid neurons. \\
+
+\item \textbf{Rectified linear neuron:}
+\label{sec:org8754604}
+The output of a rectified linear neuron is given by:
+\begin{equation}
+\max(0, w \dot x + b)
+\end{equation} 
+Plotting the activation \(a\) of a rectified linear neuron as a function of \(Z\), it looks like the function \(a = Z\), but only in the domain \([0,\infty)\), and is not defined in the domain \((-\infty,0)\).
+\end{enumerate}
 \end{document}
