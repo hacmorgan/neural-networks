@@ -116,7 +116,6 @@ class Network(object):
         # This for loop iterates through the layers
         for b, w in zip(self.biases, self.weights):
             # First we convert the bias vector to a bias array
-            #print(b.shape, np.ones((1,y.shape[1])).shape)
             bias_matrix = np.matmul(b, np.ones((1,y.shape[1])))
             # Now perform the forward propagation for all examples using
             # matrix multiplication
